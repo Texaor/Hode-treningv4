@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>Strategisk trening</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+  <div><div class="eyebrow">PERSONLIG TRENING</div><h1>Strategisk trening</h1></div>
+  <div class="top-actions">
+    <div class="version-badge">v6</div><div class="level-chip">Nivå <span id="globalLevel">1</span></div>
+    <button class="ghost" onclick="toggleSettings()">⚙️</button>
+  </div>
+</header>
+
+<main>
+<section id="home" class="view active">
+  <div class="hero card">
+    <div>
+      <div class="eyebrow">DAGENS ØKT</div>
+      <h2 id="dailyTitle">Adaptiv økt</h2>
+      <p id="dailyText">Appen velger mer av det du trenger og mindre av det du allerede mestrer.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="primary" onclick="startDaily()">Start dagens økt</button><button onclick="quickPractice()">Hva bør jeg trene?</button>
+      <button onclick="startExam()">Eksamen</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat card"><span>🔥</span><b id="streakStat">0</b><small>streak</small></div>
+    <div class="stat card"><span>⚡</span><b id="xpStat">0</b><small>XP</small></div>
+    <div class="stat card"><span>🎯</span><b id="accuracyStat">0%</b><small>treffsikkerhet</small></div>
+    <div class="stat card"><span>🏆</span><b id="recordStat">0</b><small>rekorder</small></div>
+  </div>
+
+  <div id="weaknessCard" class="card insight"></div>
+
+  <h3>Treningsområder</h3>
+  <div class="module-grid">
+    <button class="module card" onclick="openView('math')"><span>🧮</span><b>Hoderegning</b><small>+ − × ÷ prosent brøk estimasjon</small></button>
+    <button class="module card" onclick="openView('memory')"><span>🧠</span><b>Hukommelse</b><small>Sekvens, arbeidsminne, n-back</small></button>
+    <button class="module card" onclick="openView('logic')"><span>🧩</span><b>Logikk</b><small>Mønster, deduksjon, sannhet/løgn</small></button>
+    <button class="module card" onclick="openView('chess')"><span>♟️</span><b>Sjakk</b><small>Taktikk, forsvar og kandidat-trekk</small></button>
+    <button class="module card" onclick="openView('reaction')"><span>⚡</span><b>Reaksjon</b><small>Fart + inhibisjon</small></button>
+    <button class="module card" onclick="openView('observe')"><span>👁️</span><b>Observasjon</b><small>Detaljer, endringer og gjenkalling</small></button>
+    <button class="module card" onclick="openView('control')"><span>🗿</span><b>Selvkontroll</b><small>Rolig respons og uttrykkskontroll</small></button>
+    <button class="module card" onclick="openView('strategy')"><span>🔍</span><b>Strategiske scenarioer</b><small>Fakta, risiko og beslutninger</small></button>
+    <button class="module card" onclick="openView('progress')"><span>📈</span><b>Progresjon</b><small>Nivåer, historikk, feiltyper</small></button>
+    <button class="module card" onclick="openView('records')"><span>🏅</span><b>Rekorder</b><small>Personlige beste og achievements</small></button>
+  </div>
+</section>
+
+<section id="math" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Hoderegning</h2><p>Riktig først. Fart etterpå.</p></div></div>
+<div class="card controls">
+<select id="mathMode">
+<option value="mixed">Blandet</option><option value="add">Pluss</option><option value="sub">Minus</option>
+<option value="mul">Gange</option><option value="div">Dele</option><option value="percent">Prosent</option>
+<option value="fraction">Brøk</option><option value="estimate">Estimering</option><option value="chain">Kjederegning</option>
+</select>
+<select id="mathChallenge">
+<option value="normal">Normal</option><option value="sixty">60 sekunder</option><option value="hard">Hard mode</option>
+</select>
+<button onclick="startMathMode()">Start</button>
+</div>
+<div class="exercise card">
+<div class="eyebrow">NIVÅ <span id="mathLevel"></span> · <span id="mathTimer">∞</span></div>
+<div id="mathQuestion" class="big-question">Trykk start</div>
+<input id="mathAnswer" inputmode="decimal" placeholder="Svar">
+<textarea id="mathReason" placeholder="Valgfritt: hvordan tenkte du?"></textarea>
+<button class="primary" onclick="checkMath()">Svar</button>
+<div id="mathFeedback" class="feedback"></div><div id="mathTip" class="tip"></div>
+</div>
+</section>
+
+<section id="memory" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Hukommelse</h2><p>Flere typer minne, ikke bare kortpar.</p></div></div>
+<div class="card controls">
+<select id="memoryMode"><option value="sequence">Sekvens</option><option value="working">Arbeidsminne</option><option value="nback">N-back</option></select>
+<button onclick="startMemory()">Start</button>
+</div>
+<div class="exercise card"><div class="eyebrow">NIVÅ <span id="memoryLevel"></span></div>
+<div id="memoryPrompt" class="memory-seq">Trykk start</div>
+<div id="memoryWork"></div>
+<input id="memoryAnswer" placeholder="Svar">
+<button class="primary" id="memoryBtn" onclick="memoryAction()">Svar</button>
+<div id="memoryFeedback" class="feedback"></div></div>
+</section>
+
+<section id="logic" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Logikk</h2><p>Regler, eliminering og «for lite informasjon» når det faktisk er riktig.</p></div></div>
+<div class="exercise card"><div class="eyebrow">NIVÅ <span id="logicLevel"></span></div>
+<div id="logicQuestion" class="logic-question"></div><div id="logicOptions" class="options"></div>
+<textarea id="logicReason" placeholder="Hvorfor valgte du dette?"></textarea>
+<div id="logicFeedback" class="feedback"></div><button onclick="newLogic()">Ny oppgave</button></div>
+</section>
+
+<section id="chess" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Sjakk</h2><p>Ekte stillinger, lovlige trekk og fasit fra Lichess/Stockfish.</p></div></div>
+<div class="card controls">
+<select id="chessMode" onchange="changeChessMode()">
+  <option value="puzzle">Lichess-oppgave</option>
+  <option value="candidate">Kandidat-trekk</option>
+  <option value="engine">Stockfish-analyse</option>
+</select>
+<button class="primary" onclick="newChess()">Ny oppgave</button>
+<button id="chessHintBtn" onclick="puzzleHint()">Hint</button>
+</div>
+<div class="card chess-layout">
+<div>
+  <div class="eyebrow"><span id="chessTheme">SJAKK</span> · <span id="chessPuzzleNo">–</span></div>
+  <div id="board" class="board" aria-label="Sjakkbrett"></div>
+  <div id="chessSource" class="tiny chess-source"></div>
+</div>
+<div class="chess-side">
+<h3 id="chessGoal">Laster sjakk…</h3><p id="chessHint">Trekk ved å trykke på fra-ruten og deretter til-ruten.</p>
+<div id="selectedMove" class="selected-move">Trekk: –</div>
+<div id="candidateBox" class="candidate-box"></div>
+<div class="button-row">
+  <button id="candidateAddBtn" onclick="addCandidateMove()" hidden>Legg til kandidat</button>
+  <button class="primary" onclick="submitChess()">Sjekk trekk</button>
+  <button onclick="clearChess()">Nullstill valg</button>
+</div>
+<div id="chessFeedback" class="feedback"></div>
+<div id="puzzleMeta" class="chess-meta"></div>
+<div id="enginePanel" class="engine-panel" hidden>
+  <div class="engine-status-row"><span id="engineDot" class="engine-dot"></span><span id="engineStatus">Stockfish er ikke startet</span></div>
+  <label for="fenInput"><b>FEN-stilling</b></label>
+  <textarea id="fenInput">r1bq1rk1/ppp2ppp/2np1n2/8/2B1P3/2N2N2/PPP2PPP/R1BQ1RK1 w - - 0 8</textarea>
+  <div class="button-row"><button onclick="loadFenForAnalysis()">Last inn FEN</button><button class="primary" onclick="analysePosition(false)">Analyser</button><button onclick="engineHint()">Motorhint</button></div>
+  <div id="engineEval" class="engine-eval">Evaluering: –</div>
+  <p id="engineLine" class="tiny">Beste linje: –</p>
+</div>
+<hr><p><b>Tankesjekk:</b> 1) Hva truer motstanderen? 2) Finn forcing-trekk: sjakk, slag, trusler. 3) Regn motstanderens beste svar, ikke bare ditt eget første trekk.</p>
+</div></div></section>
+
+<section id="reaction" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Reaksjon og inhibisjon</h2><p>Noen signaler skal du trykke på. Andre skal du ignorere.</p></div></div>
+<div class="card controls"><select id="reactionMode"><option value="simple">Enkel reaksjon</option><option value="inhibit">Go / No-Go</option></select><button onclick="startReaction()">Start</button></div>
+<div class="exercise card"><div id="reactionBox" class="reaction-box" onclick="reactionClick()">Trykk start</div><div id="reactionFeedback" class="feedback"></div></div>
+</section>
+
+<section id="observe" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Observasjon</h2><p>Husk hva som faktisk var der, og hva som endret seg.</p></div></div>
+<div class="card controls"><select id="observeMode"><option value="recall">Gjenkalling</option><option value="change">Finn endringen</option></select><button onclick="startObserve()">Start</button></div>
+<div class="exercise card"><div class="eyebrow">NIVÅ <span id="observeLevel"></span></div><div id="observeScene" class="observe-scene">Trykk start</div><div id="observeQuestions"></div><div id="observeFeedback" class="feedback"></div></div>
+</section>
+
+<section id="control" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Selvkontroll</h2><p>Valgt reaksjon, ikke stivt ansikt.</p></div></div>
+<div class="card"><div class="eyebrow">ØVELSE</div><h3 id="controlTitle"></h3><p id="controlText"></p>
+<div class="button-row"><button class="primary" onclick="completeControl()">Fullført</button><button onclick="newControl()">Ny øvelse</button></div><div id="controlFeedback" class="feedback"></div></div>
+</section>
+
+<section id="strategy" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Strategiske scenarioer</h2><p>Skill fakta fra antakelser og vurder risiko.</p></div></div>
+<div class="exercise card"><div class="eyebrow">SCENARIO</div><div id="strategyQuestion" class="logic-question"></div><div id="strategyOptions" class="options"></div>
+<textarea id="strategyReason" placeholder="Begrunn valget ditt kort"></textarea><div id="strategyFeedback" class="feedback"></div><button onclick="newStrategy()">Nytt scenario</button></div>
+</section>
+
+<section id="progress" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Progresjon</h2><p>Appen følger nivå, fart, nøyaktighet og feiltyper.</p></div></div>
+<div id="progressCards" class="progress-grid"></div>
+<div class="card"><h3>Siste 14 økter</h3><canvas id="historyChart" width="900" height="260"></canvas></div>
+<div class="card"><h3>Vanligste feil</h3><div id="errorSummary"></div></div>
+<div class="card"><h3>Backup</h3><p>Eksporter progresjonen av og til. Da kan du få den tilbake hvis nettleserdata blir slettet eller du bytter enhet.</p><div class="button-row"><button onclick="exportProgress()">Eksporter backup</button><button onclick="document.getElementById('importProgress').click()">Importer backup</button><button onclick="resetProgress()">Nullstill progresjon</button></div><input id="importProgress" type="file" accept="application/json" style="display:none" onchange="importProgressFile(event)"></div>
+</section>
+
+<section id="records" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Rekorder og achievements</h2><p>Små milepæler, ikke konfettiorkan.</p></div></div>
+<div id="recordCards" class="progress-grid"></div><div id="achievements" class="achievement-grid"></div>
+</section>
+
+<section id="daily" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Dagens økt</h2><p>En kort økt som prioriterer svakere områder.</p></div></div>
+<div class="card daily-card">
+  <div class="progress-line"><span id="dailyProgressText">0 / 6</span><span id="dailyXpText">+0 XP</span></div>
+  <div class="bar daily-bar"><div id="dailyProgressBar" style="width:0%"></div></div>
+  <div class="eyebrow" id="dailySkillLabel">KLAR</div>
+  <h2 id="dailyTaskTitle">Start når du vil</h2>
+  <p id="dailyTaskText">Appen setter sammen dagens fokus basert på hva du trenger mest trening i.</p>
+  <div class="button-row"><button class="primary" id="dailyOpenBtn" onclick="openDailyModule()">Start økten</button><button onclick="skipDailyStep()">Bytt oppgave</button></div>
+  <div id="dailyDone" class="feedback"></div>
+</div>
+<div class="card"><h3>Planen i dag</h3><div id="dailyPlan" class="daily-plan"></div></div>
+</section>
+
+<section id="exam" class="view">
+<div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Eksamenmodus</h2><p id="examMeta"></p></div></div>
+<div class="exercise card"><div id="examQuestion" class="logic-question"></div><input id="examAnswer" placeholder="Svar"><div id="examOptions" class="options"></div>
+<button class="primary" onclick="submitExam()">Svar</button><div id="examFeedback" class="feedback"></div></div>
+</section>
+</main>
+
+<nav class="bottom-nav">
+<button onclick="openView('home')">⌂<span>Hjem</span></button>
+<button onclick="openView('math')">🧮<span>Regning</span></button>
+<button onclick="openView('chess')">♟️<span>Sjakk</span></button>
+<button onclick="openView('progress')">📈<span>Progresjon</span></button>
+</nav>
+
+<div id="settingsPanel" class="settings-panel">
+<div class="card"><div class="section-head"><h3>Innstillinger</h3><button onclick="toggleSettings()">✕</button></div>
+<label><input type="checkbox" id="focusMode" onchange="saveSettings()"> Focus mode</label>
+<label><input type="checkbox" id="explainBeforeAnswer" onchange="saveSettings()"> Be om forklaring før feedback</label>
+<label><input type="checkbox" id="soundOff" onchange="saveSettings()"> Lyd av</label>
+<p>Focus mode skjuler XP og streak mens du trener.</p></div>
+</div>
+</div>
+<script type="module" src="chess-core.js"></script>
+<script src="app.js"></script>
+</body></html>
