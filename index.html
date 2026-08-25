@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>Strategisk trening</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+  <div>
+    <div class="eyebrow">PERSONLIG TRENING <span class="version-badge">FINAL</span></div>
+    <h1>Strategisk trening</h1>
+  </div>
+  <div class="top-actions">
+    <div class="level-chip">Nivå <span id="globalLevel">1</span></div>
+    <button class="ghost icon-btn" aria-label="Innstillinger" onclick="toggleSettings()">⚙️</button>
+  </div>
+</header>
+
+<main>
+<section id="home" class="view active">
+  <div class="hero card">
+    <div>
+      <div class="eyebrow">DAGENS ØKT</div>
+      <h2>Tren det som faktisk trenger arbeid</h2>
+      <p>Appen prioriterer svakere områder, gjentar feiltyper og øker vanskelighetsgraden gradvis.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="primary" onclick="startDaily()">Start dagens økt</button>
+      <button onclick="quickPractice()">Hva bør jeg trene?</button>
+      <button onclick="startExam()">Eksamen</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat card"><span>🔥</span><b id="streakStat">0</b><small>streak</small></div>
+    <div class="stat card"><span>⚡</span><b id="xpStat">0</b><small>XP</small></div>
+    <div class="stat card"><span>🎯</span><b id="accuracyStat">0%</b><small>treffsikkerhet</small></div>
+    <div class="stat card"><span>🧠</span><b id="reviewStat">0</b><small>i feilbanken</small></div>
+  </div>
+
+  <div id="weaknessCard" class="card insight"></div>
+
+  <div class="section-title-row">
+    <h3>Treningsområder</h3>
+    <button class="small-btn" onclick="openView('review')">↻ Repeter feil</button>
+  </div>
+  <div class="module-grid">
+    <button class="module card" onclick="openView('math')"><span>🧮</span><b>Hoderegning</b><small>+ − × ÷ prosent, brøk, estimasjon</small></button>
+    <button class="module card" onclick="openView('memory')"><span>🧠</span><b>Hukommelse</b><small>Sekvens, arbeidsminne, n-back</small></button>
+    <button class="module card" onclick="openView('logic')"><span>🧩</span><b>Logikk</b><small>Mønster, deduksjon, sannhet/løgn</small></button>
+    <button class="module card" onclick="openView('reaction')"><span>⚡</span><b>Reaksjon</b><small>Fart + impulskontroll</small></button>
+    <button class="module card" onclick="openView('observe')"><span>👁️</span><b>Observasjon</b><small>Detaljer, endringer og gjenkalling</small></button>
+    <button class="module card" onclick="openView('control')"><span>🗿</span><b>Selvkontroll</b><small>Rolig respons og uttrykkskontroll</small></button>
+    <button class="module card" onclick="openView('strategy')"><span>🔍</span><b>Strategiske scenarioer</b><small>Fakta, risiko og beslutninger</small></button>
+    <button class="module card" onclick="openView('progress')"><span>📈</span><b>Progresjon</b><small>Nivåer, historikk og feiltyper</small></button>
+    <button class="module card" onclick="openView('records')"><span>🏅</span><b>Rekorder</b><small>Personlige beste og milepæler</small></button>
+  </div>
+</section>
+
+<section id="math" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Hoderegning</h2><p>Metode først, fart etterpå.</p></div></div>
+  <div class="card controls">
+    <select id="mathMode">
+      <option value="mixed">Blandet</option><option value="add">Pluss</option><option value="sub">Minus</option>
+      <option value="mul">Gange</option><option value="div">Dele</option><option value="percent">Prosent</option>
+      <option value="fraction">Brøk</option><option value="estimate">Estimering</option><option value="chain">Kjederegning</option>
+    </select>
+    <select id="mathChallenge"><option value="normal">Normal</option><option value="sixty">60 sekunder</option><option value="hard">Hard mode</option></select>
+    <button onclick="startMathMode()">Start</button>
+  </div>
+  <div class="exercise card">
+    <div class="eyebrow">NIVÅ <span id="mathLevel"></span> · <span id="mathTimer">∞</span></div>
+    <div id="mathQuestion" class="big-question">Trykk start</div>
+    <input id="mathAnswer" inputmode="decimal" placeholder="Svar">
+    <textarea id="mathReason" placeholder="Valgfritt: hvordan tenkte du?"></textarea>
+    <div class="button-row center">
+      <button class="primary" onclick="checkMath()">Svar</button>
+      <button class="hint-btn" onclick="mathHint()">💡 Hint</button>
+    </div>
+    <div id="mathHintBox" class="hint-box" hidden></div>
+    <div id="mathFeedback" class="feedback"></div>
+  </div>
+</section>
+
+<section id="memory" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Hukommelse</h2><p>Tren flere typer minne, ikke bare gjenkjenning.</p></div></div>
+  <div class="card controls">
+    <select id="memoryMode"><option value="sequence">Sekvens</option><option value="working">Arbeidsminne</option><option value="nback">N-back</option></select>
+    <button onclick="startMemory()">Start</button>
+  </div>
+  <div class="exercise card">
+    <div class="eyebrow">NIVÅ <span id="memoryLevel"></span></div>
+    <div id="memoryPrompt" class="memory-seq">Trykk start</div>
+    <div id="memoryWork"></div>
+    <input id="memoryAnswer" placeholder="Svar">
+    <div class="button-row center"><button class="primary" onclick="memoryAction()">Svar</button><button onclick="memoryHint()">💡 Tips</button></div>
+    <div id="memoryHintBox" class="hint-box" hidden></div>
+    <div id="memoryFeedback" class="feedback"></div>
+  </div>
+</section>
+
+<section id="logic" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Logikk</h2><p>Ikke gjett. Finn regelen eller bevis at det ikke finnes nok informasjon.</p></div></div>
+  <div class="exercise card">
+    <div class="eyebrow">NIVÅ <span id="logicLevel"></span></div>
+    <div id="logicQuestion" class="logic-question"></div>
+    <div id="logicOptions" class="options"></div>
+    <textarea id="logicReason" placeholder="Valgfritt: begrunn valget"></textarea>
+    <div class="button-row center"><button class="hint-btn" onclick="logicHint()">💡 Hint</button><button onclick="newLogic()">Ny oppgave</button></div>
+    <div id="logicHintBox" class="hint-box" hidden></div>
+    <div id="logicFeedback" class="feedback"></div>
+  </div>
+</section>
+
+<section id="reaction" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Reaksjon og impulskontroll</h2><p>Raskt er bra. Forhastet er ikke.</p></div></div>
+  <div class="card controls"><select id="reactionMode"><option value="simple">Enkel reaksjon</option><option value="inhibit">Go / No-Go</option></select><button onclick="startReaction()">Start</button></div>
+  <div class="exercise card"><div id="reactionBox" class="reaction-box" onclick="reactionClick()">Trykk start</div><div id="reactionFeedback" class="feedback"></div></div>
+</section>
+
+<section id="observe" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Observasjon</h2><p>Registrer detaljer uten å blande inn antakelser.</p></div></div>
+  <div class="card controls"><select id="observeMode"><option value="recall">Gjenkalling</option><option value="change">Finn endringen</option></select><button onclick="startObserve()">Start</button></div>
+  <div class="exercise card"><div class="eyebrow">NIVÅ <span id="observeLevel"></span></div><div id="observeScene" class="observe-scene">Trykk start</div><div id="observeQuestions"></div><div id="observeFeedback" class="feedback"></div></div>
+</section>
+
+<section id="control" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Selvkontroll</h2><p>Målet er å velge reaksjonen din, ikke å bli følelsesløs.</p></div></div>
+  <div class="card">
+    <div class="eyebrow">ØVELSE</div><h3 id="controlTitle"></h3><p id="controlText"></p>
+    <div class="button-row"><button class="primary" onclick="completeControl()">Fullført</button><button onclick="newControl()">Ny øvelse</button></div>
+    <div id="controlFeedback" class="feedback"></div>
+  </div>
+</section>
+
+<section id="strategy" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Strategiske scenarioer</h2><p>Skill fakta fra antakelser, og vurder risiko før du bestemmer deg.</p></div></div>
+  <div class="exercise card">
+    <div class="eyebrow">SCENARIO · NIVÅ <span id="strategyLevel"></span></div>
+    <div id="strategyQuestion" class="logic-question"></div>
+    <div id="strategyOptions" class="options"></div>
+    <textarea id="strategyReason" placeholder="Valgfritt: begrunn valget"></textarea>
+    <div class="button-row center"><button class="hint-btn" onclick="strategyHint()">💡 Hint</button><button onclick="newStrategy()">Nytt scenario</button></div>
+    <div id="strategyHintBox" class="hint-box" hidden></div>
+    <div id="strategyFeedback" class="feedback"></div>
+  </div>
+</section>
+
+<section id="review" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Feilbanken</h2><p>Repeter det du faktisk har bommet på.</p></div></div>
+  <div class="card">
+    <div id="reviewSummary"></div>
+    <div class="button-row"><button class="primary" onclick="startReview()">Start repetisjon</button><button onclick="clearReview()">Tøm feilbank</button></div>
+  </div>
+  <div id="reviewExercise" class="exercise card" hidden>
+    <div class="eyebrow">REPETISJON <span id="reviewCounter"></span></div>
+    <div id="reviewQuestion" class="logic-question"></div>
+    <div id="reviewOptions" class="options"></div>
+    <input id="reviewAnswer" placeholder="Svar">
+    <div class="button-row center"><button class="primary" onclick="submitReview()">Svar</button><button onclick="reviewHint()">💡 Hint</button></div>
+    <div id="reviewHintBox" class="hint-box" hidden></div>
+    <div id="reviewFeedback" class="feedback"></div>
+  </div>
+</section>
+
+<section id="progress" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Progresjon</h2><p>Se hva som faktisk blir bedre, ikke bare hvor mange ganger du har trykket.</p></div></div>
+  <div id="progressCards" class="progress-grid"></div>
+  <div class="card"><h3>Siste eksamener</h3><canvas id="historyChart" width="900" height="260"></canvas></div>
+  <div class="card"><h3>Vanligste feiltyper</h3><div id="errorSummary"></div></div>
+  <div class="card"><h3>Backup</h3><p>Eksporter progresjonen av og til hvis du vil kunne flytte den til en annen nettleser eller enhet.</p><div class="button-row"><button onclick="exportProgress()">Eksporter backup</button><button onclick="$('importProgress').click()">Importer backup</button><button onclick="resetProgress()">Nullstill progresjon</button></div><input id="importProgress" type="file" accept="application/json" hidden onchange="importProgressFile(event)"></div>
+</section>
+
+<section id="records" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Rekorder</h2><p>Milepæler som viser utvikling, ikke bare pynt.</p></div></div>
+  <div id="recordCards" class="progress-grid"></div>
+  <div id="achievements" class="achievement-grid"></div>
+</section>
+
+<section id="daily" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Dagens økt</h2><p>En kort økt som prioriterer svakere områder.</p></div></div>
+  <div class="card daily-card">
+    <div class="progress-line"><span id="dailyProgressText">0 / 6</span><span id="dailyXpText">+0 XP</span></div>
+    <div class="bar daily-bar"><div id="dailyProgressBar" style="width:0%"></div></div>
+    <div class="eyebrow" id="dailySkillLabel">KLAR</div>
+    <h2 id="dailyTaskTitle">Start når du vil</h2>
+    <p id="dailyTaskText"></p>
+    <div class="button-row"><button class="primary" onclick="openDailyModule()">Åpne oppgaven</button><button onclick="skipDailyStep()">Bytt oppgave</button></div>
+    <div id="dailyDone" class="feedback"></div>
+  </div>
+  <div class="card"><h3>Planen i dag</h3><div id="dailyPlan" class="daily-plan"></div></div>
+</section>
+
+<section id="exam" class="view">
+  <div class="section-head"><button class="back" onclick="openView('home')">←</button><div><h2>Eksamenmodus</h2><p id="examMeta"></p></div></div>
+  <div class="exercise card">
+    <div id="examQuestion" class="logic-question"></div>
+    <input id="examAnswer" placeholder="Svar">
+    <div id="examOptions" class="options"></div>
+    <button class="primary" onclick="submitExam()">Svar</button>
+    <div id="examFeedback" class="feedback"></div>
+  </div>
+</section>
+</main>
+
+<nav class="bottom-nav">
+  <button onclick="openView('home')">⌂<span>Hjem</span></button>
+  <button onclick="openView('math')">🧮<span>Regning</span></button>
+  <button onclick="openView('logic')">🧩<span>Logikk</span></button>
+  <button onclick="openView('progress')">📈<span>Progresjon</span></button>
+</nav>
+
+<div id="settingsPanel" class="settings-panel">
+  <div class="card">
+    <div class="section-head"><h3>Innstillinger</h3><button onclick="toggleSettings()">✕</button></div>
+    <label><input type="checkbox" id="focusMode" onchange="saveSettings()"> Focus mode</label>
+    <label><input type="checkbox" id="explainBeforeAnswer" onchange="saveSettings()"> Krev kort begrunnelse på logikk/scenarioer</label>
+    <label><input type="checkbox" id="autoNext" onchange="saveSettings()"> Automatisk neste oppgave etter riktig svar</label>
+    <p>Focus mode skjuler XP og streak mens du trener.</p>
+  </div>
+</div>
+</div>
+<script src="app.js?v=7"></script>
+</body>
+</html>
